@@ -376,9 +376,21 @@ static const CGFloat SVProgressHUDParallaxDepthPoints = 10;
     
     CGFloat keyboardHeight;
     double animationDuration;
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
+
+    // TODO: remove this when we change the target to iOS 8
+    static BOOL isiOS8 = NO;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if( [[[UIDevice currentDevice].systemVersion componentsSeparatedByString:@"."][0] integerValue] >= 8 )
+            isiOS8 = YES;
+    });
+
+    UIInterfaceOrientation orientation;
+    if( isiOS8 )
+        orientation = UIInterfaceOrientationPortrait;
+    else
+        orientation = [[UIApplication sharedApplication] statusBarOrientation];
+
     if(notification) {
         NSDictionary* keyboardInfo = [notification userInfo];
         CGRect keyboardFrame = [[keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue];
